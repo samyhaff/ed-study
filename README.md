@@ -36,7 +36,7 @@ We compare three candidate-selection paradigms for entity disambiguation with sm
 uv sync
 ```
 
-Data goes in `data/zelda` ([ZELDA](https://github.com/flairNLP/zelda)), `data/zeshel` ([ZESHEL](https://github.com/lajanugen/zeshel)) and `data/gladis` ([GLADIS](https://github.com/LihuChen/GLADIS)).
+Data goes in `data/zelda` ([ZELDA](https://github.com/flairNLP/zelda)), `data/zeshel` ([ZESHEL](https://github.com/lajanugen/zeshel)) and `data/gladis` ([GLADIS](https://github.com/tigerchen52/gladis)).
 
 The teacher model is served with:
 

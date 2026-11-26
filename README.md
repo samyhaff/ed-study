@@ -2,7 +2,7 @@
 
 # When Does Reasoning Help Entity Disambiguation?<br>Small LLMs In-Domain and Under Shift
 
-[Samy Haffoudhi](https://github.com/samyhaff), Fabian M. Suchanek, Nils Holzenberger<br>
+[Samy Haffoudhi](https://samyhaff.github.io/), [Fabian M. Suchanek](https://suchanek.name/), [Nils Holzenberger](https://perso.telecom-paristech.fr/holzenberger/)<br>
 Télécom Paris, Institut Polytechnique de Paris
 
 [![Paper](https://img.shields.io/badge/arXiv-2611.30334-b31b1b?logo=arxiv&logoColor=white)](https://arxiv.org/abs/2611.30334)

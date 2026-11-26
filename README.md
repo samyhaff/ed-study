@@ -46,7 +46,7 @@ uv run trl vllm-serve --model google/gemma-4-26B-A4B-it --port 8000 --max_model_
 
 ## Inference
 
-Listwise paradigms rerank the top-10 shortlist produced by the pointwise reranker (`--shortlist`).
+The pointwise reranker scores all candidates first. Direct selection and reasoning then choose from its top-10 shortlist (`--shortlist`).
 
 ```bash
 # ZELDA
@@ -54,16 +54,20 @@ uv run annotate_zelda.py data/zelda test_aida-b out/aida_reranker.jsonl --model 
 uv run annotate_zelda.py data/zelda test_aida-b out/aida_direct.jsonl --model <direct-selector> --direct --shortlist out/aida_reranker.jsonl --max_model_len 32768
 uv run annotate_zelda.py data/zelda test_aida-b out/aida_tts.jsonl --model <reasoner> --n 10 --shortlist out/aida_reranker.jsonl
 
-# ZESHEL, GLADIS
+# ZESHEL
+uv run annotate_zeshel.py data/zeshel test out/lego_reranker.jsonl --domains lego --model <reranker> --reranker
 uv run annotate_zeshel.py data/zeshel test out/lego_tts.jsonl --domains lego --model <reasoner> --n 10 --shortlist out/lego_reranker.jsonl --context_window 3072
+
+# GLADIS
+uv run annotate_gladis.py data/gladis biomedical out/gladis_reranker.jsonl --model <reranker> --reranker
 uv run annotate_gladis.py data/gladis biomedical out/gladis_tts.jsonl --model <reasoner> --n 10 --shortlist out/gladis_reranker.jsonl --context_window 3072
 ```
 
 ```bash
-uv run evaluate.py zelda out/aida_tts.jsonl --sc
-uv run evaluate.py zeshel out/lego_tts.jsonl
-uv run evaluate.py zeshel out/lego_reranker.jsonl --top_k 10
-uv run evaluate.py zeshel out/lego_fewshot.jsonl --exclude_train_data data/fewshot/lego_direct.jsonl
+uv run evaluate.py zelda out/aida_tts.jsonl --sc          # --sc: also report pass@k and maj@k
+uv run evaluate.py zeshel out/lego_tts.jsonl              # accuracy, normalized accuracy, per category
+uv run evaluate.py zeshel out/lego_reranker.jsonl --top_k 10   # shortlist recall@10
+uv run evaluate.py zeshel out/lego_fewshot.jsonl --exclude_train_data data/fewshot/lego_direct.jsonl   # few-shot: drop training mentions
 uv run evaluate.py gladis out/gladis_tts.jsonl
 ```
 

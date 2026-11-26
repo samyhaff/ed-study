@@ -1,8 +1,34 @@
-# When Does Reasoning Help Entity Disambiguation? Small LLMs In-Domain and Under Shift
+<div align="center">
 
-Code for our *Findings of EACL 2027* paper.
+# When Does Reasoning Help Entity Disambiguation?<br>Small LLMs In-Domain and Under Shift
 
-[Paper](https://arxiv.org/abs/2611.30334) · [Models](https://hf.co/collections/samyhaff/ed-study)
+[Samy Haffoudhi](https://github.com/samyhaff), Fabian M. Suchanek, Nils Holzenberger<br>
+Télécom Paris, Institut Polytechnique de Paris
+
+[![Paper](https://img.shields.io/badge/arXiv-2611.30334-b31b1b?logo=arxiv&logoColor=white)](https://arxiv.org/abs/2611.30334)
+[![Venue](https://img.shields.io/badge/EACL_2027-Findings-1f6feb)](https://arxiv.org/abs/2611.30334)
+[![Models](https://img.shields.io/badge/🤗_Hugging_Face-Models-ffcc4d)](https://hf.co/collections/samyhaff/ed-study)
+[![Python](https://img.shields.io/badge/Python-3.12-3776ab?logo=python&logoColor=white)](https://www.python.org/)
+[![uv](https://img.shields.io/badge/managed_by-uv-de5fe9?logo=uv&logoColor=white)](https://github.com/astral-sh/uv)
+[![License](https://img.shields.io/badge/License-Apache_2.0-green)](LICENSE)
+
+</div>
+
+<p align="center"><img src="assets/overview.png" width="90%" alt="Pointwise reranking, direct selection and reasoning-based selection over a reranked shortlist"></p>
+
+We compare three candidate-selection paradigms for entity disambiguation with small LLMs (0.6–4B): **pointwise reranking**, **direct selection** from a shortlist, and **reasoning** with self-consistency, trained by distillation or RL (GRPO). We evaluate them in the classical, few-shot and true zero-shot settings.
+
+**The benefit of reasoning grows with domain shift: it is negligible in-domain and decisive in the true zero-shot setting.**
+
+| 4B models | Classical<br><sub>ZELDA, acc.</sub> | Few-shot<br><sub>ZESHEL, norm. acc.</sub> | True zero-shot<br><sub>ZESHEL, norm. acc.</sub> |
+|:--|:-:|:-:|:-:|
+| Pointwise reranking | **81.0** | 83.8 | 77.6 |
+| Direct selection | 79.5 | 81.8 | 77.3 |
+| Reasoning | 80.5 <sub>RLVR</sub> | **85.9** <sub>distill → RLVR</sub> | **83.7** <sub>off-policy distill</sub> |
+
+- **Uncertainty locates disagreement.** Reranking and reasoning mostly disagree on mentions where the reranker's top-2 margin is small, and such mentions become more frequent under shift. Under true zero-shot shift, reasoning repairs three times as many reranker predictions as it breaks.
+- **The best training recipe depends on the setting.** Off-policy distillation transfers best under shift. With a little in-domain data, RLVR is the only recipe that beats the 26B teacher, but it also forgets more of the source domain.
+- **Gains concentrate on lexical ambiguity.** Reasoning helps most when the mention matches several entity titles that differ only by a disambiguation phrase.
 
 ## Setup
 
@@ -41,7 +67,12 @@ uv run evaluate.py zeshel out/lego_fewshot.jsonl --exclude_train_data data/fewsh
 uv run evaluate.py gladis out/gladis_tts.jsonl
 ```
 
-## Training: classical setting (ZELDA)
+## Training
+
+<details>
+<summary><b>Classical setting (ZELDA)</b></summary>
+
+<br>
 
 ```bash
 uv run prepare_zelda.py data/zelda
@@ -78,7 +109,12 @@ Merge LoRA adapters before inference:
 uv run merge_lora.py models/e4b-off/checkpoint-2700 models/e4b-off/model
 ```
 
-## Training: few-shot setting (ZESHEL)
+</details>
+
+<details>
+<summary><b>Few-shot setting (ZESHEL)</b></summary>
+
+<br>
 
 Per test domain, 100 mentions are sampled for training (10 held out for validation); the rest are used for evaluation.
 
@@ -98,15 +134,21 @@ uv run train_gkd.py data/fewshot/lego_distill.jsonl models/e4b-off-lego http://l
 uv run accelerate launch train_grpo.py data/fewshot/lego_grpo.jsonl models/e4b-grpo-lego --model models/e4b-off/model --epochs 15 --per_device_train_batch_size 2 --eval_split 0.1
 ```
 
+</details>
+
 ## Citation
 
 ```bibtex
 @inproceedings{haffoudhi2027reasoning,
-  title     = {When Does Reasoning Help Entity Disambiguation? Small {LLM}s In-Domain and Under Shift},
-  author    = {Haffoudhi, Samy and Suchanek, Fabian M. and Holzenberger, Nils},
-  booktitle = {Findings of the Association for Computational Linguistics: EACL 2027},
-  year      = {2027},
-  eprint    = {2611.30334},
+  title         = {When Does Reasoning Help Entity Disambiguation? Small {LLM}s In-Domain and Under Shift},
+  author        = {Haffoudhi, Samy and Suchanek, Fabian M. and Holzenberger, Nils},
+  booktitle     = {Findings of the Association for Computational Linguistics: EACL 2027},
+  year          = {2027},
+  eprint        = {2611.30334},
   archivePrefix = {arXiv}
 }
 ```
+
+## License
+
+[Apache 2.0](LICENSE)
